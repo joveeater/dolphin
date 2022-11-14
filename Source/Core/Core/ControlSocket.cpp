@@ -18,7 +18,7 @@ static void flushSend(ConnInfo & info){
 	}else{
 		size_t sent;
 		info.sock->send(info.sendLow, info.sendBase+info.sendSize-info.sendLow, sent);
-		int s=sent;
+		int64_t s=sent;
 		if(s!=info.sendBase+info.sendSize-info.sendLow){
 			info.sendLow+=sent;
 			return;
@@ -28,10 +28,10 @@ static void flushSend(ConnInfo & info){
 	}
 }
 
-static void sendMessage(ConnInfo & info, char * buffer){
+static void sendMessage(ConnInfo & info, const char * buffer){
 	size_t i=strlen(buffer);
 
-	int used=info.sendHigh-info.sendLow;
+	int64_t used=info.sendHigh-info.sendLow;
 	if(used<0){
 		used+=info.sendSize;
 	}
@@ -93,7 +93,7 @@ static void sockSendRegisters(ConnInfo & info){
 		cur+=snprintf(cur, 16383-(cur-buf), "%x ", GPR(i));
 	}
 	for(int i=0; i<32; i++){
-		cur+=snprintf(cur, 16383-(cur-buf), "%lx %lx ", rPS(i).PS0AsU64(), rPS(i).PS1AsU64());
+		cur+=snprintf(cur, 16383-(cur-buf), "%llx %llx ", rPS(i).PS0AsU64(), rPS(i).PS1AsU64());
 	}
 	sendMessage(info, buf);
 }
