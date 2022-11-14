@@ -212,7 +212,7 @@ void ControlSocket::run_thread(){
 void ControlSocket::parseBuffer(char * buffer, size_t size){
 	uint32_t bp;
 	if(sscanf(buffer, "ADDBP: %d", &bp)>0){
-		PowerPC::breakpoints.Add(bp, false, false, true);
+		PowerPC::breakpoints.Add(bp, false, false, true, std::nullopt);
 	}else if(sscanf(buffer, "DELBP: %d", &bp)>0){
 		PowerPC::breakpoints.Remove(bp);
 	}else if(sscanf(buffer, "ADDWP: %d", &bp)>0){
