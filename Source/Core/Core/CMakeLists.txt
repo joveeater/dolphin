@@ -51,6 +51,8 @@ add_library(core
   ConfigLoaders/NetPlayConfigLoader.h
   ConfigManager.cpp
   ConfigManager.h
+  ControlSocket.cpp
+  ControlSocket.h
   Core.cpp
   Core.h
   CoreTiming.cpp

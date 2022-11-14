@@ -24,6 +24,7 @@
 #include "Core/Config/MainSettings.h"
 #include "Core/Core.h"
 #include "Core/DolphinAnalytics.h"
+#include "Core/ControlSocket.h"
 
 #include "DolphinQt/Host.h"
 #include "DolphinQt/MainWindow.h"
@@ -283,6 +284,9 @@ int main(int argc, char* argv[])
                                   Config::Get(Config::MAIN_AUTOUPDATE_HASH_OVERRIDE));
       updater->start();
     }
+
+    ControlSocket * sock=new ControlSocket(3330);
+    sock->run();
 
     retval = app.exec();
   }

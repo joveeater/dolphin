@@ -109,6 +109,8 @@ static bool s_is_started = false;
 static Common::Flag s_is_booting;
 static std::thread s_emu_thread;
 static std::vector<StateChangedCallbackFunc> s_on_state_changed_callbacks;
+static std::vector<std::function<void()>> s_on_cpu_state_changed_callbacks;
+static std::vector<std::function<void()>> s_on_bp_clear_callbacks;
 
 static std::thread s_cpu_thread;
 static bool s_is_throttler_temp_disabled = false;
@@ -1010,6 +1012,74 @@ void CallOnStateChangedCallbacks(Core::State state)
   {
     if (on_state_changed_callback)
       on_state_changed_callback(state);
+  }
+}
+
+int AddOnCPUStateChangedCallback(std::function<void()> callback)
+{
+  for (size_t i = 0; i < s_on_cpu_state_changed_callbacks.size(); ++i)
+  {
+    if (!s_on_cpu_state_changed_callbacks[i])
+    {
+      s_on_cpu_state_changed_callbacks[i] = std::move(callback);
+      return int(i);
+    }
+  }
+  s_on_cpu_state_changed_callbacks.emplace_back(std::move(callback));
+  return int(s_on_cpu_state_changed_callbacks.size()) - 1;
+}
+
+bool RemoveOnCPUStateChangedCallback(int* handle)
+{
+  if (handle && *handle >= 0 && s_on_cpu_state_changed_callbacks.size() > static_cast<size_t>(*handle))
+  {
+    s_on_cpu_state_changed_callbacks[*handle] = std::function<void()>();
+    *handle = -1;
+    return true;
+  }
+  return false;
+}
+
+void CallOnCPUStateChangedCallbacks()
+{
+  for (const std::function<void()>& on_state_changed_callback : s_on_cpu_state_changed_callbacks)
+  {
+    if (on_state_changed_callback)
+      on_state_changed_callback();
+  }
+}
+
+int AddOnBpClearCallback(std::function<void()> callback)
+{
+  for (size_t i = 0; i < s_on_bp_clear_callbacks.size(); ++i)
+  {
+    if (!s_on_bp_clear_callbacks[i])
+    {
+      s_on_bp_clear_callbacks[i] = std::move(callback);
+      return int(i);
+    }
+  }
+  s_on_bp_clear_callbacks.emplace_back(std::move(callback));
+  return int(s_on_bp_clear_callbacks.size()) - 1;
+}
+
+bool RemoveOnBpClearCallback(int* handle)
+{
+  if (handle && *handle >= 0 && s_on_bp_clear_callbacks.size() > static_cast<size_t>(*handle))
+  {
+    s_on_bp_clear_callbacks[*handle] = std::function<void()>();
+    *handle = -1;
+    return true;
+  }
+  return false;
+}
+
+void CallOnBpClearCallbacks()
+{
+  for (const std::function<void()>& on_bp_clear_callback : s_on_bp_clear_callbacks)
+  {
+    if (on_bp_clear_callback)
+      on_bp_clear_callback();
   }
 }
 

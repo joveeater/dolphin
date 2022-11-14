@@ -149,6 +149,14 @@ int AddOnStateChangedCallback(StateChangedCallbackFunc callback);
 bool RemoveOnStateChangedCallback(int* handle);
 void CallOnStateChangedCallbacks(Core::State state);
 
+int AddOnCPUStateChangedCallback(std::function<void()> callback);
+bool RemoveOnCPUStateChangedCallback(int* handle);
+void CallOnCPUStateChangedCallbacks();
+
+int AddOnBpClearCallback(std::function<void()> callback);
+bool RemoveOnBpClearCallback(int* handle);
+void CallOnBpClearCallbacks();
+
 // Run on the Host thread when the factors change. [NOT THREADSAFE]
 void UpdateWantDeterminism(bool initial = false);
 

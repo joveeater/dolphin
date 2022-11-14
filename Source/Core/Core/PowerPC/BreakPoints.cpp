@@ -151,6 +151,8 @@ void BreakPoints::Clear()
   }
 
   m_breakpoints.clear();
+
+  Core::CallOnBpClearCallbacks();
 }
 
 void BreakPoints::ClearAllTemporary()
@@ -167,6 +169,17 @@ void BreakPoints::ClearAllTemporary()
     {
       ++bp;
     }
+  }
+}
+
+void BreakPoints::addHandler(std::function<void()> fn){
+	m_handlers.push_back(fn);
+}
+
+void BreakPoints::triggerLog()
+{
+  for( auto e: m_handlers ){
+	e();
   }
 }
 

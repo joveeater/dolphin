@@ -499,6 +499,8 @@ void CodeWidget::StepOut()
     if (WillInstructionReturn(inst))
     {
       PowerPC::SingleStep();
+      Core::CallOnCPUStateChangedCallbacks();
+
       break;
     }
 

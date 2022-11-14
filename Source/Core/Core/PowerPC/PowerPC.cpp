@@ -626,6 +626,7 @@ void CheckBreakPoints()
                    "{:08x}) LR={:08x}",
                    PC, g_symbolDB.GetDescription(PC), GPR(3), GPR(4), GPR(5), GPR(6), GPR(7),
                    GPR(8), GPR(9), GPR(10), GPR(11), GPR(12), LR);
+    PowerPC::breakpoints.triggerLog();
   }
   if (PowerPC::breakpoints.IsTempBreakPoint(PC))
     PowerPC::breakpoints.Remove(PC);

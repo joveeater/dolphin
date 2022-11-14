@@ -121,8 +121,12 @@ void Run()
         }
       }
 
+      Core::CallOnCPUStateChangedCallbacks();
+
       // Enter a fast runloop
       PowerPC::RunLoop();
+
+      Core::CallOnCPUStateChangedCallbacks();
 
       state_lock.lock();
       s_state_cpu_thread_active = false;
@@ -169,6 +173,8 @@ void Run()
 
       PowerPC::SingleStep();
 
+      Core::CallOnCPUStateChangedCallbacks();
+
       state_lock.lock();
       s_state_cpu_thread_active = false;
       s_state_cpu_idle_cvar.notify_all();
@@ -205,6 +211,7 @@ void Stop()
   s_state = State::PowerDown;
   s_state_cpu_cvar.notify_one();
 
+  Core::CallOnCPUStateChangedCallbacks();
   while (s_state_cpu_thread_active)
   {
     s_state_cpu_idle_cvar.wait(state_lock);

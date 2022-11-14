@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "Common/CommonTypes.h"
 
@@ -75,8 +76,14 @@ public:
   void Clear();
   void ClearAllTemporary();
 
+  // Log handlers
+  void addHandler(std::function<void()> fn);
+  void triggerLog();
+
 private:
+  void TriggerHandlers();
   TBreakPoints m_breakpoints;
+  std::vector<std::function<void()>> m_handlers;
 };
 
 // Memory breakpoints
